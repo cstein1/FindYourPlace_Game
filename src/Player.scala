@@ -8,6 +8,7 @@ class Player(private val c:RemoteClient, var px: Int, var py: Int) extends Entit
   //private var incrementy = ((playery / level.maze.length) * 600)
 
   override def update(): Unit = {
+    
   }
 
   def upPress() = {

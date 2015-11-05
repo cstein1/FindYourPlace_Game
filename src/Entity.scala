@@ -16,10 +16,5 @@ abstract class Entity(private var x:Double, private var y:Double) extends Serial
       x = nx
       y = ny
     }
-
-  }
-  
-  def drawEntity() = {
-    // check to see if player or npc, then forward command to the correct draw command
   }
 }
