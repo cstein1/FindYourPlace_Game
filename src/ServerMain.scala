@@ -11,6 +11,7 @@ import javax.swing.Timer
 
 @remote trait RemoteServer {
   def joinGame(client: RemoteClient)
+  def updateClient(client: RemoteClient)
 }
 
 object ServerMain extends UnicastRemoteObject with RemoteServer {
@@ -43,7 +44,6 @@ object ServerMain extends UnicastRemoteObject with RemoteServer {
     Future {
       while (true) {
         Thread.sleep(100)
-        //println("Accepting...")
         Future {
           joinGame(_)
         }
@@ -61,8 +61,8 @@ object ServerMain extends UnicastRemoteObject with RemoteServer {
     clients synchronized {
       clients += new Player(client, 8, 8)
       level.addEntity(new Player(client,8,8))
-      println("SOMEONE JOINED!")
       numPlayers += 1
+      println("SOMEONE JOINED! Amount of players present: " + numPlayers)
      // Actor.actor {
         clients.foreach(_.client.gameStart)
       //}
@@ -75,5 +75,8 @@ object ServerMain extends UnicastRemoteObject with RemoteServer {
     enemies.foreach(_.update)
     //drawPanel.repaint
   }).start()
-
+  
+  override def updateClient(cli: RemoteClient) {
+    
+  }
 }
