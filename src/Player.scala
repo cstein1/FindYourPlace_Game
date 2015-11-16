@@ -4,12 +4,8 @@ class Player(private val c:RemoteClient, var px: Int, var py: Int) extends Entit
   private var playery = py.toDouble
   override def gety = playery
   override def getx = playerx
-  //private var incrementx = ((playerx / level.maze.length) * 800)
-  //private var incrementy = ((playery / level.maze.length) * 600)
 
-  override def update(): Unit = {
-    
-  }
+  //override def update(): Unit = {}
 
   def upPress() = {
     println("Up " + playerx + " " + playery)

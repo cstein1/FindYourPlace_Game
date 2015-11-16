@@ -14,6 +14,7 @@ class Level(private val intMaze: Array[Array[Int]], private var chars: List[Enti
   def addEntity(e:Entity):Unit = {
     chars ::= e
     e.level = this
+    println("Player Added")
   }
   def updateAll:Unit = chars.foreach{ _.update }
 }

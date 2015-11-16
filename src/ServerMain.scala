@@ -15,13 +15,12 @@ import javax.swing.Timer
 }
 
 object ServerMain extends UnicastRemoteObject with RemoteServer {
-  private val clients = mutable.Buffer[Player]()
-  def players= clients
+  def players = Client.players
   val enemy1 = new NPC(1, 1)
-  val enemy2 = new NPC(3,3)
-  val enemies = List(enemy1,enemy2)
+  val enemy2 = new NPC(3, 3)
+  val enemies = List(enemy1, enemy2)
   // val players = clients.toList.foreach
-  val chars = enemies ++ clients.toList
+  var chars = enemies ++ players.toList
 
   val maze1 = Array(Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
     Array(1, 0, 1, 0, 0, 0, 0, 0, 0, 1),
@@ -39,13 +38,14 @@ object ServerMain extends UnicastRemoteObject with RemoteServer {
 
   private var numPlayers = 0
   def main(args: Array[String]) {
-    connect
+	  connect
     println("Running")
     Future {
       while (true) {
         Thread.sleep(100)
         Future {
           joinGame(_)
+          //timer.start()
         }
       }
     }
@@ -58,24 +58,25 @@ object ServerMain extends UnicastRemoteObject with RemoteServer {
   }
 
   def joinGame(client: RemoteClient): Unit = {
-    clients synchronized {
-      clients += new Player(client, 8, 8)
-      level.addEntity(new Player(client,8,8))
+    chars synchronized {
+      //players += List[Player](new Player(client, 8, 8))
+      level.addEntity(new Player(client, 8, 8))
+      chars = level.characters
       numPlayers += 1
       println("SOMEONE JOINED! Amount of players present: " + numPlayers)
-     // Actor.actor {
-        clients.foreach(_.client.gameStart)
+      //Actor.actor {
+      players.foreach(_.client.addClientToServer)
       //}
     }
   }
 
   val timer = new Timer(100, Swing.ActionListener { ae =>
     level.updateAll
-    Client.updateLevel(level)
+    Client.updateLevel
     enemies.foreach(_.update)
     //drawPanel.repaint
   }).start()
-  
+
   override def updateClient(cli: RemoteClient) {
     
   }

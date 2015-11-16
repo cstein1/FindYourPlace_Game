@@ -5,7 +5,7 @@ import java.awt.geom.Ellipse2D
 import java.awt.Dimension
 import java.rmi._
 
-object Renderer {
+object Renderer extends Serializable {
   def render(g: Graphics2D, maze: Level, width: Int, height: Int): Unit = {
     var boxWidth: Double = width.toDouble / maze.arrMaze.length
     var boxHeight: Double = height.toDouble / maze.arrMaze(0).length
