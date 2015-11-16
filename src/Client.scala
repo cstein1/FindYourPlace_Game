@@ -15,6 +15,8 @@ import javax.swing.Timer
 
 import scala.collection.mutable
 
+// NEED TO SYNCH UP CLIENTS AND ADD PLAYER
+
 @remote trait RemoteClient {
   def updateLevel(level: Level): Unit
   def gameStart
