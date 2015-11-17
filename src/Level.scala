@@ -1,4 +1,4 @@
-class Level(private val intMaze: Array[Array[Int]], private var chars: List[Entity]) extends Serializable {
+class Level(private val intMaze: Array[Array[Int]], private var chars: List[Entity]) {
   def arrMaze = intMaze
   val maze = arrMaze.map(row => row.map(_ match {
     case 0 => Floor
@@ -6,7 +6,7 @@ class Level(private val intMaze: Array[Array[Int]], private var chars: List[Enti
     case 2 => Door
     case 3 => Hole
   }))
-
+  chars.foreach { x => x.level = this }
   def characters = chars
   def element(x: Int, y: Int): MapElement = { maze(x)(y) }
   def remCharacter(c: Character) = {}
@@ -17,4 +17,9 @@ class Level(private val intMaze: Array[Array[Int]], private var chars: List[Enti
     println("Player Added")
   }
   def updateAll:Unit = chars.foreach{ _.update }
+  
+  def buildPassableLevel:PassableLevel = {
+    val passableChars = chars.foreach(_.toPassableEntity)
+    new PassableLevel(intMaze, passableChars)
+  }
 }

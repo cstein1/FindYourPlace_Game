@@ -18,28 +18,33 @@ import scala.collection.mutable
 // NEED TO SYNC UP CLIENTS AND ADD PLAYER
 
 @remote trait RemoteClient {
-  def updateLevel
-  def addClientToServer
+  def updateLevel(l:PassableLevel)
+  //def addClientToServer
   //def issueCMD
 }
 
 object Client extends UnicastRemoteObject with RemoteClient {
-  var cLevel: Level = null
-  override def updateLevel {
-    ServerMain.level.updateAll
+  val server = Naming.lookup("rmi://localhost/GameServer") match {
+    case s: RemoteServer => s
+    case _ => throw new RuntimeException("That's no server!")
+  }
+  //val player = server.joinGame(this)
+  var level: PassableLevel = null
+  def updateLevel(l: PassableLevel) {
+    level = l
     drawPanel.repaint()
   }
 
   var clients = List[Player]()
   def players = clients
-  def addClientToServer = for (i <- ServerMain.players.indices) clients ::= ServerMain.players(i)
+  //def addClientToServer = for (i <- ServerMain.players.indices) clients ::= ServerMain.players(i)
 
   val width = 600
   val height = 400
-
+  val renderer= new Renderer
   val drawPanel: Panel = new Panel {
     override def paint(g: Graphics2D): Unit = {
-      Renderer.render(g, ServerMain.level, width, height)
+      renderer.render(g, ServerMain.level, width, height)
     }
     preferredSize = new Dimension(width, height)
 
@@ -59,54 +64,16 @@ object Client extends UnicastRemoteObject with RemoteClient {
         requestFocus()
     }
   }
-  
+
   val frame = new MainFrame {
     title = "Don't Fall in the Holes. They are bad. Falling is bad."
     contents = drawPanel
-    menuBar = new MenuBar {
-      /*contents += new Menu("File") {
-          contents += new MenuItem(Action("Pause")(timer.stop()))
-          contents += new MenuItem(Action("Resume")(timer.start()))
-          contents += new MenuItem(Action("Save")(save))
-          contents += new MenuItem(Action("Load")(load))
-
-        }*/
-    }
   }
 
   def main(args: Array[String]) {
-    val server: RemoteServer = Naming.lookup("rmi://localhost/GameServer") match {
-      case s: RemoteServer => s
-      case _ => throw new RuntimeException("Server was not server :( :( :(")
-    }
     //val playerNumber = 
-    addClientToServer
+    //addClientToServer
     server.joinGame(this)
     frame.open()
   }
-  
- /*
-      def save: Unit = {
-      val chooser = new FileChooser
-      if (chooser.showSaveDialog(drawPanel) == FileChooser.Result.Approve) {
-        val oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(chooser.selectedFile)))
-        oos.writeObject(level)
-        oos.close()
-      }
-    }
-
-    def load: Unit = {
-      val chooser = new FileChooser
-      if (chooser.showSaveDialog(drawPanel) == FileChooser.Result.Approve) {
-        val ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(chooser.selectedFile)))
-        ois.readObject match {
-          case l: Level =>
-            level = l
-            drawPanel.repaint
-          case _ => println("That's not a level.")
-        }
-        ois.close()))))))))
-      }
-    }
-  } */
 }

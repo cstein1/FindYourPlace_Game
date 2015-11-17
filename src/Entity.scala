@@ -17,4 +17,8 @@ abstract class Entity(private var x:Double, private var y:Double) extends Serial
       y = ny
     }
   }
+  
+  def toPassableEntity:PassableEntity = {
+    new PassableEntity(x,y,0)
+  }
 }

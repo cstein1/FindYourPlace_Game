@@ -5,7 +5,7 @@ import java.awt.geom.Ellipse2D
 import java.awt.Dimension
 import java.rmi._
 
-object Renderer extends Serializable {
+class Renderer extends Serializable {
   def render(g: Graphics2D, maze: Level, width: Int, height: Int): Unit = {
     var boxWidth: Double = width.toDouble / maze.arrMaze.length
     var boxHeight: Double = height.toDouble / maze.arrMaze(0).length
@@ -22,7 +22,7 @@ object Renderer extends Serializable {
     for (e <- maze.characters) {
       e match {
         case _: NPC => g.setPaint(Color.yellow)
-        case _: Player => g.setPaint(Color.red)
+        case _: RemotePlayer => g.setPaint(Color.red)
       }
       g.fill(new Ellipse2D.Double(e.getx * boxWidth, e.gety * boxHeight, boxWidth, boxHeight))
 

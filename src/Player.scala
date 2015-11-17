@@ -1,9 +1,21 @@
-class Player(private val c:RemoteClient, var px: Int, var py: Int) extends Entity(px, py) {
+
+@remote trait RemotePlayer {
+  def upPress
+  def dPress
+  def lPress
+  def rPress
+  def getPx
+  def getPy
+}
+
+class Player(private val c:RemoteClient, var px: Int, var py: Int) extends Entity(px, py) with RemotePlayer {
   def client = c
   private var playerx = px.toDouble
   private var playery = py.toDouble
-  override def gety = playery
-  override def getx = playerx
+  override def getPy = playery
+  override def getPx = playerx
+  override def getx = {???}
+  override def gety = {???}
 
   //override def update(): Unit = {}
 
@@ -34,4 +46,5 @@ class Player(private val c:RemoteClient, var px: Int, var py: Int) extends Entit
       playerx += 1
     }
   }
+
 }
