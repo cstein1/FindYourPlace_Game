@@ -19,7 +19,9 @@ class Level(private val intMaze: Array[Array[Int]], private var chars: List[Enti
   def updateAll:Unit = chars.foreach{ _.update }
   
   def buildPassableLevel:PassableLevel = {
-    val passableChars = chars.foreach(_.toPassableEntity)
+    var passableChars = {
+      for (i <- chars.indices) chars(i).toPassableEntity
+    }
     new PassableLevel(intMaze, passableChars)
   }
 }
