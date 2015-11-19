@@ -1,4 +1,4 @@
-
+import java.rmi.server.UnicastRemoteObject
 @remote trait RemotePlayer {
   def upPress
   def dPress
@@ -8,15 +8,12 @@
   def getPy
 }
 
-class Player(private val c:RemoteClient, var px: Int, var py: Int) extends Entity(px, py) with RemotePlayer {
+class Player(private val c:RemoteClient, var px: Int, var py: Int) extends UnicastRemoteObject with Entity with RemotePlayer {
   def client = c
   private var playerx = px.toDouble
   private var playery = py.toDouble
   override def getPy = playery
   override def getPx = playerx
-  override def getx = {???}
-  override def gety = {???}
-
   //override def update(): Unit = {}
 
   def upPress() = {

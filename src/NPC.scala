@@ -1,4 +1,4 @@
-class NPC(var nx: Int, var ny: Int) extends Entity(nx, ny) {
+class NPC(var nx: Int, var ny: Int) extends Entity {
   def seekNdestroy: Unit = {
     
   }  

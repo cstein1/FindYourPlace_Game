@@ -1,4 +1,7 @@
-abstract class Entity(private var x:Double, private var y:Double) extends Serializable {
+trait Entity extends Serializable {
+  protected var x:Double
+  protected var y:Double
+  
   private var mLevel:Level = null
   println(x + " " + y)
   def getx = x

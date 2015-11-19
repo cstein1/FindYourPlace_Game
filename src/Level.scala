@@ -22,6 +22,6 @@ class Level(private val intMaze: Array[Array[Int]], private var chars: List[Enti
     var passableChars = {
       for (i <- chars.indices) chars(i).toPassableEntity
     }
-    new PassableLevel(intMaze, passableChars)
+    new PassableLevel(intMaze, chars.map(_.toPassableEntity))
   }
 }
