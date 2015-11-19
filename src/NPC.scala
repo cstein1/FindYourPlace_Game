@@ -1,13 +1,8 @@
-class NPC(var nx: Int, var ny: Int) extends Entity {
+class NPC(val nx: Int, val ny: Int) extends Entity {
+  protected var x:Double = nx
+  protected var y:Double = ny
+
   def seekNdestroy: Unit = {
     
   }  
-  //def move(px:Double, py:Double): Unit = {
-/*    val dx = px-nx
-    val dy = py-ny
-    val len = math.sqrt(dx*dx+dy*dy)
-    nx += dx/len
-    ny += dy/len
-*/
-  //}
 }

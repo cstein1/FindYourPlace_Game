@@ -8,7 +8,10 @@ import java.rmi.server.UnicastRemoteObject
   def getPy
 }
 
-class Player(private val c:RemoteClient, var px: Int, var py: Int) extends UnicastRemoteObject with Entity with RemotePlayer {
+class Player(private val c:RemoteClient, val px: Int, val py: Int) extends UnicastRemoteObject with Entity with RemotePlayer {
+  protected var x:Double = px
+  protected var y:Double = py
+
   def client = c
   private var playerx = px.toDouble
   private var playery = py.toDouble
