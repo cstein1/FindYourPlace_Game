@@ -1,50 +1,51 @@
 import java.rmi.server.UnicastRemoteObject
+
 @remote trait RemotePlayer {
-  def upPress
-  def dPress
-  def lPress
-  def rPress
-  def getPx
-  def getPy
+  def upPressed:Unit
+  def downPressed:Unit
+  def leftPressed:Unit
+  def rightPressed:Unit
+  def upReleased:Unit
+  def downReleased:Unit
+  def leftReleased:Unit
+  def rightReleased:Unit
+  def getx:Double
+  def gety:Double
 }
 
-class Player(private val c:RemoteClient, val px: Int, val py: Int) extends UnicastRemoteObject with Entity with RemotePlayer {
-  protected var x:Double = px
-  protected var y:Double = py
+class Player(ex:Double, ey:Double, val client:RemoteClient) extends UnicastRemoteObject with Entity with RemotePlayer {
+  protected var x = ex
+  protected var y = ey
+  private var up = false
+  private var down = false
+  private var left = false
+  private var right = false
+  
+  def upPressed:Unit = {
+    println("player up pressed "+this)
+    up = true
+  }
+  def downPressed:Unit = down = true
+  def leftPressed:Unit = left = true
+  def rightPressed:Unit = right = true
+  def upReleased:Unit = up = false
+  def downReleased:Unit = down = false
+  def leftReleased:Unit = left = false
+  def rightReleased:Unit = right = false
 
-  def client = c
-  private var playerx = px.toDouble
-  private var playery = py.toDouble
-  override def getPy = playery
-  override def getPx = playerx
-  //override def update(): Unit = {}
-
-  def upPress() = {
-    println("Up " + playerx + " " + playery)
-    if (level.element(playerx.toInt, playery.toInt - 1).canPass) {
-      playery -= 1
+  override def update():Unit = {
+    var nx = x
+    var ny = y
+    if(up) println("In update "+up+" "+this)
+    if(up) ny -= 1
+    if(down) ny += 1
+    if(left) nx -= 1
+    if(right) nx += 1
+    if(nx>=0 && nx<level.maze.size && ny>=0 && ny<level.maze(0).size && level.maze(ny.toInt)(nx.toInt).canPass) {
+      x = nx
+      y = ny
     }
   }
 
-  def dPress() = {
-    println("Down")
-    if (playery > (playery / level.maze.length) && level.element(playerx.toInt, playery.toInt + 1).canPass) {
-      playery += 1
-    }
-  }
-
-  def lPress() = {
-    println("Left")
-    if (playerx > (playerx / level.maze.length) && level.element(playerx.toInt - 1, playery.toInt).canPass) {
-      playerx -= 1
-    }
-  }
-
-  def rPress() = {
-    println("Right")
-    if (playerx < level.maze.size && level.element(playerx.toInt + 1, playery.toInt).canPass) {
-      playerx += 1
-    }
-  }
-
+  def makePassable:PassableEntity = new PassableEntity(x, y, Entity.playerValue)
 }

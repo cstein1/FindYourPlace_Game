@@ -1,79 +1,64 @@
-import java.awt.Dimension
-import java.awt.Graphics2D
-import java.rmi.Naming
 import java.rmi.server.UnicastRemoteObject
-
 import scala.swing.MainFrame
-import scala.swing.MenuBar
-import scala.swing.Panel
-import scala.swing.Swing
-import scala.swing.event.Key
+import scala.swing.event.KeyReleased
+import java.awt.Graphics2D
 import scala.swing.event.KeyPressed
-import scala.swing.event.MouseClicked
-
-import javax.swing.Timer
-
-import scala.collection.mutable
-
-// NEED TO SYNC UP CLIENTS AND ADD PLAYER
+import scala.swing.Panel
+import java.awt.Dimension
+import scala.swing.MenuItem
+import scala.swing.Menu
+import scala.swing.MenuBar
+import scala.swing.Action
+import scala.swing.event.Key
+import java.rmi.Naming
+import scala.swing.Button
 
 @remote trait RemoteClient {
   def updateLevel(l:PassableLevel)
-  //def addClientToServer
-  //def issueCMD
 }
 
 object Client extends UnicastRemoteObject with RemoteClient {
-  val server = Naming.lookup("rmi://localhost/GameServer") match {
-    case s: RemoteServer => s
-    case _ => throw new RuntimeException("That's no server!")
+  val server = Naming.lookup("rmi://localhost/tacos") match {
+    case s:RemoteServer => s
+    case _ => throw new RuntimeException("That's no server.")
   }
-  //val player = server.joinGame(this)
-  var level: PassableLevel = null
-  def updateLevel(l: PassableLevel) {
-    level = l
-    drawPanel.repaint()
-  }
-
-  var clients = List[Player]()
-  def players = clients
-  //def addClientToServer = for (i <- ServerMain.players.indices) clients ::= ServerMain.players(i)
-
-  val width = 600
-  val height = 400
-  val renderer= new Renderer
-  val drawPanel: Panel = new Panel {
+  println(server)
+  val player = server.joinGame(this)
+  println(player)
+  private var level:PassableLevel = null
+  private val renderer = new Renderer
+  val drawPanel = new Panel {
     override def paint(g: Graphics2D): Unit = {
-      renderer.render(g, ServerMain.level, width, height)
+      if(level!=null) renderer.render(g, level, size.width, size.height)
     }
-    preferredSize = new Dimension(width, height)
-
-    listenTo(keys, mouse.clicks)
+    listenTo(keys)
     reactions += {
-      case e: KeyPressed =>
-        println("KeyPressed")
-        if (e.key == Key.Left) { clients.foreach(_.lPress) }
-        if (e.key == Key.Right) { clients.foreach(_.rPress) }
-        if (e.key == Key.Up) { clients.foreach(_.upPress) }
-        if (e.key == Key.Down) { clients.foreach(_.dPress) }
-
-        clients.foreach(_.update())
-        //enemies.foreach(_.update)
-        repaint
-      case e: MouseClicked =>
-        requestFocus()
+      case kp: KeyPressed =>
+        println("Client key pressed")
+        if (kp.key == Key.Up) player.upPressed
+        else if (kp.key == Key.Down) player.downPressed
+        else if (kp.key == Key.Left) player.leftPressed
+        else if (kp.key == Key.Right) player.rightPressed
+      case kr: KeyReleased =>
+        if (kr.key == Key.Up) player.upReleased
+        else if (kr.key == Key.Down) player.downReleased
+        else if (kr.key == Key.Left) player.leftReleased
+        else if (kr.key == Key.Right) player.rightReleased
     }
+    preferredSize = new Dimension(800, 600)
+  }
+  def updateLevel(l:PassableLevel):Unit = {
+    level = l
+    if(drawPanel!=null) drawPanel.repaint()
   }
 
   val frame = new MainFrame {
-    title = "Don't Fall in the Holes. They are bad. Falling is bad."
+    title = "Dont fall in the holes"
     contents = drawPanel
   }
 
-  def main(args: Array[String]) {
-    //val playerNumber = 
-    //addClientToServer
-    server.joinGame(this)
-    frame.open()
+  def main(args:Array[String]):Unit = {
+    frame.open
+    drawPanel.requestFocus
   }
 }

@@ -6,20 +6,20 @@ import java.awt.Dimension
 import java.rmi._
 
 class Renderer extends Serializable {
-  def render(g: Graphics2D, maze: Level, width: Int, height: Int): Unit = {
-    var boxWidth: Double = width.toDouble / maze.arrMaze.length
-    var boxHeight: Double = height.toDouble / maze.arrMaze(0).length
+  def render(g: Graphics2D, maze: PassableLevel, width: Int, height: Int): Unit = {
+    var boxWidth: Double = width.toDouble / maze.maze.length
+    var boxHeight: Double = height.toDouble / maze.maze(0).length
 
-    for (i <- maze.arrMaze.indices; j <- maze.arrMaze(i).indices) {
+    for (i <- maze.maze.indices; j <- maze.maze(i).indices) {
       maze.maze(i)(j) match {
-        case Wall => g.setPaint(Color.white)
-        case Floor => g.setPaint(Color.black)
-        case Hole => g.setPaint(Color.white)
-        case Door => g.setPaint(Color.YELLOW)
+        case Floor  => g.setPaint(Color.white)
+        case Wall => g.setPaint(Color.black)
+        //case Hole => g.setPaint(Color.white)
+        //case Door => g.setPaint(Color.YELLOW)
       }
       g.fill(new Rectangle2D.Double(i * boxWidth, j * boxHeight, boxWidth * 10, boxHeight * 10))
     }
-    for (e <- maze.characters) {
+    for (e <- maze.entities) {
       e match {
         case _: NPC => g.setPaint(Color.yellow)
         case _: RemotePlayer => g.setPaint(Color.red)
