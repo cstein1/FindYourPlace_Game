@@ -9,7 +9,6 @@ class Renderer extends Serializable {
   def render(g: Graphics2D, maze: PassableLevel, width: Int, height: Int): Unit = {
     var boxWidth: Double = width.toDouble / maze.maze.length
     var boxHeight: Double = height.toDouble / maze.maze(0).length
-
     for (i <- maze.maze.indices; j <- maze.maze(i).indices) {
       maze.maze(i)(j) match {
         case Floor  => g.setPaint(Color.white)
@@ -20,9 +19,9 @@ class Renderer extends Serializable {
       g.fill(new Rectangle2D.Double(i * boxWidth, j * boxHeight, boxWidth * 10, boxHeight * 10))
     }
     for (e <- maze.entities) {
-      e match {
-        case _: NPC => g.setPaint(Color.yellow)
-        case _: RemotePlayer => g.setPaint(Color.red)
+      e.etype match {
+        case Entity.enemyValue => g.setPaint(Color.yellow)
+        case Entity.playerValue => g.setPaint(Color.red)
       }
       g.fill(new Ellipse2D.Double(e.getx * boxWidth, e.gety * boxHeight, boxWidth, boxHeight))
 
