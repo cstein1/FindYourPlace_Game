@@ -12,6 +12,7 @@ import scala.swing.Action
 import scala.swing.event.Key
 import java.rmi.Naming
 import scala.swing.Button
+import scala.swing.event.MouseClicked
 
 @remote trait RemoteClient {
   def updateLevel(l:PassableLevel)
@@ -31,7 +32,7 @@ object Client extends UnicastRemoteObject with RemoteClient {
     override def paint(g: Graphics2D): Unit = {
       if(level!=null) renderer.render(g, level, size.width, size.height)
     }
-    listenTo(keys)
+    listenTo(keys,mouse.clicks)
     reactions += {
       case kp: KeyPressed =>
         println("Client key pressed")
@@ -44,6 +45,8 @@ object Client extends UnicastRemoteObject with RemoteClient {
         else if (kr.key == Key.Down) player.downReleased
         else if (kr.key == Key.Left) player.leftReleased
         else if (kr.key == Key.Right) player.rightReleased
+      case mc: MouseClicked =>
+        this.requestFocus()
     }
     preferredSize = new Dimension(800, 600)
   }

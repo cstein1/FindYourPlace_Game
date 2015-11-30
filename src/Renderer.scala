@@ -16,7 +16,7 @@ class Renderer extends Serializable {
         //case Hole => g.setPaint(Color.white)
         //case Door => g.setPaint(Color.YELLOW)
       }
-      g.fill(new Rectangle2D.Double(i * boxWidth, j * boxHeight, boxWidth * 10, boxHeight * 10))
+      g.fill(new Rectangle2D.Double(j * boxWidth, i * boxHeight, boxWidth * 10, boxHeight * 10))
     }
     for (e <- maze.entities) {
       e.etype match {
