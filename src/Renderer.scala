@@ -13,8 +13,6 @@ class Renderer extends Serializable {
       maze.maze(i)(j) match {
         case Floor  => g.setPaint(Color.white)
         case Wall => g.setPaint(Color.black)
-        //case Hole => g.setPaint(Color.white)
-        //case Door => g.setPaint(Color.YELLOW)
       }
       g.fill(new Rectangle2D.Double(j * boxWidth, i * boxHeight, boxWidth * 10, boxHeight * 10))
     }

@@ -16,15 +16,14 @@ import java.rmi.server.UnicastRemoteObject
 class Player(ex:Double, ey:Double, val client:RemoteClient) extends UnicastRemoteObject with Entity with RemotePlayer {
   protected var x = ex
   protected var y = ey
+  def getX = x
+  def getY = y
   private var up = false
   private var down = false
   private var left = false
   private var right = false
   
-  def upPressed:Unit = {
-    println("player up pressed "+this)
-    up = true
-  }
+  def upPressed:Unit = up = true
   def downPressed:Unit = down = true
   def leftPressed:Unit = left = true
   def rightPressed:Unit = right = true
@@ -36,7 +35,6 @@ class Player(ex:Double, ey:Double, val client:RemoteClient) extends UnicastRemot
   override def update():Unit = {
     var nx = x
     var ny = y
-    if(up) println("In update "+up+" "+this)
     if(up) ny -= 1
     if(down) ny += 1
     if(left) nx -= 1
