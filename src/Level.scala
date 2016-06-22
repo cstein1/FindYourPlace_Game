@@ -35,7 +35,6 @@ class Level(intMaze: Array[Array[Int]], private var chars: List[Entity]) extends
       }
     }
   }
-  
   def pList = psList
   def npcList = npcsList
   
